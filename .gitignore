@@ -49,6 +49,9 @@ coverage/
 *.sqlite
 *.sqlite3
 
+# Prisma
+/prisma/migrations/dev.db*
+
 # Logs
 logs/
 *.log
