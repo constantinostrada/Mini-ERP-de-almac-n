@@ -1,0 +1,83 @@
+{
+  "root": true,
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "tsconfigRootDir": "."
+  },
+  "plugins": ["@typescript-eslint", "import"],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/explicit-function-return-type": "warn",
+    "@typescript-eslint/no-non-null-assertion": "error",
+    "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
+
+    "import/no-cycle": "error",
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
+        "pathGroups": [
+          { "pattern": "@/domain/**", "group": "internal", "position": "before" },
+          { "pattern": "@/application/**", "group": "internal", "position": "before" },
+          { "pattern": "@/infrastructure/**", "group": "internal" },
+          { "pattern": "@/interfaces/**", "group": "internal", "position": "after" }
+        ],
+        "alphabetize": { "order": "asc" },
+        "newlines-between": "always"
+      }
+    ],
+
+    "no-console": ["warn", { "allow": ["warn", "error"] }]
+  },
+  "overrides": [
+    {
+      "files": ["src/domain/**/*.ts"],
+      "rules": {
+        "import/no-restricted-paths": [
+          "error",
+          {
+            "zones": [
+              { "target": "./src/domain", "from": "./src/application" },
+              { "target": "./src/domain", "from": "./src/infrastructure" },
+              { "target": "./src/domain", "from": "./src/interfaces" }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/application/**/*.ts"],
+      "rules": {
+        "import/no-restricted-paths": [
+          "error",
+          {
+            "zones": [
+              { "target": "./src/application", "from": "./src/infrastructure" },
+              { "target": "./src/application", "from": "./src/interfaces" }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["src/interfaces/**/*.ts", "src/interfaces/**/*.tsx"],
+      "rules": {
+        "import/no-restricted-paths": [
+          "error",
+          {
+            "zones": [
+              { "target": "./src/interfaces", "from": "./src/infrastructure" }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
