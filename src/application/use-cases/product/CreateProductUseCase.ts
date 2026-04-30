@@ -37,6 +37,7 @@ export class CreateProductUseCase {
       sku,
       name: dto.name,
       description: dto.description ?? '',
+      notes: dto.notes,
       unitPrice: Money.fromDecimal(dto.unitPriceAmount, dto.unitPriceCurrency),
       stockQuantity: Quantity.create(dto.initialStockQuantity),
       reorderThreshold: Quantity.create(dto.reorderThreshold),

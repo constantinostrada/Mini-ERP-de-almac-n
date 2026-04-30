@@ -23,7 +23,7 @@ export class UpdateProductUseCase {
       throw new ProductNotFoundException(dto.id);
     }
 
-    product.updateDetails(dto.name, dto.description ?? '');
+    product.updateDetails(dto.name, dto.description ?? '', dto.notes);
     product.updatePrice(Money.fromDecimal(dto.unitPriceAmount, dto.unitPriceCurrency));
     product.updateReorderThreshold(Quantity.create(dto.reorderThreshold));
 

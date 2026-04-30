@@ -38,6 +38,35 @@ describe('CreateProductUseCase', () => {
     expect(dto.needsReorder).toBe(false);
   });
 
+  it('creates a product WITHOUT notes (notes is undefined in DTO)', async () => {
+    const dto = await useCase.execute({
+      sku: 'NO-NOTES-001',
+      name: 'Producto sin notas',
+      description: 'Sin notas',
+      unitPriceAmount: 1,
+      unitPriceCurrency: 'EUR',
+      initialStockQuantity: 5,
+      reorderThreshold: 1,
+    });
+
+    expect(dto.notes).toBeUndefined();
+  });
+
+  it('creates a product WITH notes and exposes them in the DTO', async () => {
+    const dto = await useCase.execute({
+      sku: 'WITH-NOTES-001',
+      name: 'Producto con notas',
+      description: 'Con notas',
+      notes: 'Frágil — manipular con cuidado',
+      unitPriceAmount: 1,
+      unitPriceCurrency: 'EUR',
+      initialStockQuantity: 5,
+      reorderThreshold: 1,
+    });
+
+    expect(dto.notes).toBe('Frágil — manipular con cuidado');
+  });
+
   it('throws DuplicateSkuException if SKU already exists', async () => {
     const input = {
       sku: 'BOX-001',

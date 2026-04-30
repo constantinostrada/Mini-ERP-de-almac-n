@@ -61,6 +61,40 @@ describe('Integration — /api/products', () => {
       expect(persisted).toHaveLength(1);
     });
 
+    it('creates a product WITHOUT notes — notes is undefined in the response', async () => {
+      const res = await createProductHandler(
+        jsonRequest('http://localhost/api/products', 'POST', { ...validBody, sku: 'INT-NO-NOTES' }),
+      );
+      const { status, body } = await readJson(res);
+
+      expect(status).toBe(201);
+      const data = body.data as { notes?: string };
+      expect(data.notes).toBeUndefined();
+    });
+
+    it('creates a product WITH notes and exposes them via GET', async () => {
+      const noteText = 'Producto sensible — almacenar refrigerado';
+      const created = await createProductHandler(
+        jsonRequest('http://localhost/api/products', 'POST', {
+          ...validBody,
+          sku: 'INT-WITH-NOTES',
+          notes: noteText,
+        }),
+      );
+      const { status: createStatus, body: createBody } = await readJson(created);
+      expect(createStatus).toBe(201);
+      const createdData = createBody.data as { id: string; notes?: string };
+      expect(createdData.notes).toBe(noteText);
+
+      const getRes = await getProductByIdHandler(
+        jsonRequest(`http://localhost/api/products/${createdData.id}`, 'GET'),
+        { params: { id: createdData.id } },
+      );
+      const { status: getStatus, body: getBody } = await readJson(getRes);
+      expect(getStatus).toBe(200);
+      expect((getBody.data as { notes?: string }).notes).toBe(noteText);
+    });
+
     it('rejects creation with duplicate SKU returning 409 DUPLICATE_SKU', async () => {
       await createProductHandler(jsonRequest('http://localhost/api/products', 'POST', validBody));
       const res = await createProductHandler(
@@ -153,6 +187,30 @@ describe('Integration — /api/products', () => {
       expect(data.description).toBe('Nueva descripción');
       expect(data.unitPriceAmount).toBe(12.5);
       expect(data.reorderThreshold).toBe(3);
+    });
+
+    it('persists notes on update and returns them via PUT', async () => {
+      const created = await createProductHandler(
+        jsonRequest('http://localhost/api/products', 'POST', validBody),
+      );
+      const id = ((await readJson(created)).body.data as { id: string }).id;
+
+      const res = await updateProductHandler(
+        jsonRequest(`http://localhost/api/products/${id}`, 'PUT', {
+          name: 'Producto con nota',
+          description: 'desc',
+          notes: 'Cliente VIP — entrega urgente',
+          unitPriceAmount: 1,
+          unitPriceCurrency: 'EUR',
+          reorderThreshold: 1,
+        }),
+        { params: { id } },
+      );
+      const { status, body } = await readJson(res);
+
+      expect(status).toBe(200);
+      const data = body.data as { notes?: string };
+      expect(data.notes).toBe('Cliente VIP — entrega urgente');
     });
   });
 
