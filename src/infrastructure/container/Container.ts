@@ -1,5 +1,6 @@
 import { AdjustStockUseCase } from '@/application/use-cases/stock/AdjustStockUseCase';
 import { GetLowStockProductsUseCase } from '@/application/use-cases/stock/GetLowStockProductsUseCase';
+import { GetMovementsByTypeReportUseCase } from '@/application/use-cases/stock/GetMovementsByTypeReportUseCase';
 import { GetStockMovementsUseCase } from '@/application/use-cases/stock/GetStockMovementsUseCase';
 import { ListPublicMovementsUseCase } from '@/application/use-cases/stock/ListPublicMovementsUseCase';
 import { RegisterMovementUseCase } from '@/application/use-cases/stock/RegisterMovementUseCase';
@@ -68,6 +69,11 @@ class Container {
   );
 
   readonly listPublicMovements = new ListPublicMovementsUseCase(this.stockMovementRepository);
+
+  readonly getMovementsByTypeReport = new GetMovementsByTypeReportUseCase(
+    this.stockMovementRepository,
+    this.productRepository,
+  );
 
   // ─── Use Cases — Valuation ────────────────────────────────────────────────
   readonly getWarehouseValuation = new GetWarehouseValuationUseCase(this.productRepository);
