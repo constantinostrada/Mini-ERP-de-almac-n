@@ -50,3 +50,11 @@ export interface PublicStockMovementDTO {
   unit_cost?: MoneyDTO | null;
   created_at: string; // ISO 8601
 }
+
+export interface MovementsByTypeReportItemDTO {
+  sku: string;
+  product_name: string;
+  type: PublicMovementType;
+  quantity: number;
+  occurred_at: string; // ISO 8601
+}
