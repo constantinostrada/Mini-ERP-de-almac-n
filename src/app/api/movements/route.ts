@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server';
 
-import type { RegisterMovementDTO } from '@/application/dtos/StockMovementDTO';
+import type { MoneyDTO, RegisterMovementDTO } from '@/application/dtos/StockMovementDTO';
 import { container } from '@/infrastructure/container/Container';
 import { handleError, successResponse } from '@/interfaces/api/helpers/apiResponse';
 import { parseBody } from '@/interfaces/api/helpers/parseBody';
@@ -11,6 +11,8 @@ interface RegisterMovementBody {
   type?: string;
   quantity?: number;
   reason?: string;
+  unit_cost?: MoneyDTO;
+  unitCost?: MoneyDTO;
 }
 
 /**
@@ -38,6 +40,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       type: body.type as RegisterMovementDTO['type'],
       quantity: body.quantity,
       reason: body.reason,
+      unitCost: body.unit_cost ?? body.unitCost,
     };
 
     const movement = await container.registerMovement.execute(dto);

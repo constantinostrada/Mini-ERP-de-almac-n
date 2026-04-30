@@ -28,11 +28,17 @@ export interface GetMovementsByDateRangeDTO {
  */
 export type PublicMovementType = 'INGRESO' | 'EGRESO';
 
+export interface MoneyDTO {
+  amount: number;
+  currency: string;
+}
+
 export interface RegisterMovementDTO {
   productId: string;
   type: PublicMovementType;
   quantity: number;
   reason?: string;
+  unitCost?: MoneyDTO;
 }
 
 export interface PublicStockMovementDTO {
@@ -41,5 +47,6 @@ export interface PublicStockMovementDTO {
   type: PublicMovementType;
   quantity: number;
   reason?: string;
+  unit_cost?: MoneyDTO | null;
   created_at: string; // ISO 8601
 }
