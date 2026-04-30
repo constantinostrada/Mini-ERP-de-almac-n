@@ -20,6 +20,11 @@ export class InMemoryStockMovementRepository implements IStockMovementRepository
       .sort((a, b) => b.occurredAt.getTime() - a.occurredAt.getTime());
   }
 
+  async findLastByProductId(productId: ProductId): Promise<StockMovement | null> {
+    const movements = await this.findByProductId(productId);
+    return movements[0] ?? null;
+  }
+
   async findByDateRange(from: Date, to: Date): Promise<StockMovement[]> {
     return Array.from(this.store.values())
       .filter((m) => m.occurredAt >= from && m.occurredAt <= to)
