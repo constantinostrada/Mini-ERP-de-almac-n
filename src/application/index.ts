@@ -1,6 +1,10 @@
 // DTOs
 export type { ProductDTO, CreateProductDTO, UpdateProductDTO, AdjustStockDTO, GetProductByIdDTO } from './dtos/ProductDTO';
 export type { StockMovementDTO, GetMovementsByProductDTO } from './dtos/StockMovementDTO';
+export type {
+  LowStockReportLineDTO,
+  GetLowStockReportDTO,
+} from './dtos/LowStockReportDTO';
 export type { SupplierDTO, CreateSupplierDTO, UpdateSupplierDTO } from './dtos/SupplierDTO';
 export type { WarehouseValuationDTO, ProductValuationLineDTO } from './dtos/ValuationDTO';
 
@@ -18,6 +22,7 @@ export { DeleteProductUseCase } from './use-cases/product/DeleteProductUseCase';
 export { AdjustStockUseCase } from './use-cases/stock/AdjustStockUseCase';
 export { GetStockMovementsUseCase } from './use-cases/stock/GetStockMovementsUseCase';
 export { GetLowStockProductsUseCase } from './use-cases/stock/GetLowStockProductsUseCase';
+export { GetLowStockReportUseCase } from './use-cases/stock/GetLowStockReportUseCase';
 
 // Use Cases — Valuation
 export { GetWarehouseValuationUseCase } from './use-cases/valuation/GetWarehouseValuationUseCase';
