@@ -9,8 +9,8 @@ export interface StockMovementProps {
   productId: ProductId;
   type: MovementType;
   quantity: Quantity;
-  unitCost: Money;
-  reason: string;
+  unitCost?: Money;
+  reason?: string;
   reference?: string;
   occurredAt: Date;
 }
@@ -26,21 +26,21 @@ export class StockMovement {
   private readonly _productId: ProductId;
   private readonly _type: MovementType;
   private readonly _quantity: Quantity;
-  private readonly _unitCost: Money;
-  private readonly _reason: string;
+  private readonly _unitCost: Money | undefined;
+  private readonly _reason: string | undefined;
   private readonly _reference: string | undefined;
   private readonly _occurredAt: Date;
 
   private constructor(props: StockMovementProps) {
-    if (!props.reason || props.reason.trim().length === 0) {
-      throw new Error('StockMovement reason cannot be empty');
+    if (props.quantity.value <= 0) {
+      throw new Error('StockMovement quantity must be greater than zero');
     }
     this._id = props.id;
     this._productId = props.productId;
     this._type = props.type;
     this._quantity = props.quantity;
     this._unitCost = props.unitCost;
-    this._reason = props.reason.trim();
+    this._reason = props.reason?.trim() ? props.reason.trim() : undefined;
     this._reference = props.reference;
     this._occurredAt = props.occurredAt;
   }
@@ -65,15 +65,15 @@ export class StockMovement {
     return this._quantity;
   }
 
-  get unitCost(): Money {
+  get unitCost(): Money | undefined {
     return this._unitCost;
   }
 
-  get totalCost(): Money {
-    return this._unitCost.multiply(this._quantity.value);
+  get totalCost(): Money | undefined {
+    return this._unitCost?.multiply(this._quantity.value);
   }
 
-  get reason(): string {
+  get reason(): string | undefined {
     return this._reason;
   }
 

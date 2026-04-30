@@ -1,6 +1,8 @@
 import { AdjustStockUseCase } from '@/application/use-cases/stock/AdjustStockUseCase';
 import { GetLowStockProductsUseCase } from '@/application/use-cases/stock/GetLowStockProductsUseCase';
 import { GetStockMovementsUseCase } from '@/application/use-cases/stock/GetStockMovementsUseCase';
+import { ListPublicMovementsUseCase } from '@/application/use-cases/stock/ListPublicMovementsUseCase';
+import { RegisterMovementUseCase } from '@/application/use-cases/stock/RegisterMovementUseCase';
 import { CreateProductUseCase } from '@/application/use-cases/product/CreateProductUseCase';
 import { DeleteProductUseCase } from '@/application/use-cases/product/DeleteProductUseCase';
 import { GetProductByIdUseCase } from '@/application/use-cases/product/GetProductByIdUseCase';
@@ -10,6 +12,7 @@ import { CreateSupplierUseCase } from '@/application/use-cases/supplier/CreateSu
 import { ListSuppliersUseCase } from '@/application/use-cases/supplier/ListSuppliersUseCase';
 import { GetWarehouseValuationUseCase } from '@/application/use-cases/valuation/GetWarehouseValuationUseCase';
 
+import { InMemoryMutex } from '../concurrency/InMemoryMutex';
 import { UuidGenerator } from '../id/UuidGenerator';
 import { InMemoryProductRepository } from '../repositories/InMemoryProductRepository';
 import { InMemoryStockMovementRepository } from '../repositories/InMemoryStockMovementRepository';
@@ -27,6 +30,7 @@ import { InMemorySupplierRepository } from '../repositories/InMemorySupplierRepo
 class Container {
   // ─── Shared singletons ────────────────────────────────────────────────────
   readonly idGenerator = new UuidGenerator();
+  readonly stockMutex = new InMemoryMutex();
   readonly productRepository = new InMemoryProductRepository();
   readonly stockMovementRepository = new InMemoryStockMovementRepository();
   readonly supplierRepository = new InMemorySupplierRepository();
@@ -55,6 +59,15 @@ class Container {
   readonly getStockMovements = new GetStockMovementsUseCase(this.stockMovementRepository);
 
   readonly getLowStockProducts = new GetLowStockProductsUseCase(this.productRepository);
+
+  readonly registerMovement = new RegisterMovementUseCase(
+    this.productRepository,
+    this.stockMovementRepository,
+    this.idGenerator,
+    this.stockMutex,
+  );
+
+  readonly listPublicMovements = new ListPublicMovementsUseCase(this.stockMovementRepository);
 
   // ─── Use Cases — Valuation ────────────────────────────────────────────────
   readonly getWarehouseValuation = new GetWarehouseValuationUseCase(this.productRepository);
