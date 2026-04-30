@@ -8,6 +8,7 @@ import { DeleteProductUseCase } from '@/application/use-cases/product/DeleteProd
 import { GetProductByIdUseCase } from '@/application/use-cases/product/GetProductByIdUseCase';
 import { ListProductsUseCase } from '@/application/use-cases/product/ListProductsUseCase';
 import { UpdateProductUseCase } from '@/application/use-cases/product/UpdateProductUseCase';
+import { GetOverstockedProductsUseCase } from '@/application/use-cases/reports/GetOverstockedProductsUseCase';
 import { CreateSupplierUseCase } from '@/application/use-cases/supplier/CreateSupplierUseCase';
 import { ListSuppliersUseCase } from '@/application/use-cases/supplier/ListSuppliersUseCase';
 import { GetWarehouseValuationUseCase } from '@/application/use-cases/valuation/GetWarehouseValuationUseCase';
@@ -71,6 +72,12 @@ class Container {
 
   // ─── Use Cases — Valuation ────────────────────────────────────────────────
   readonly getWarehouseValuation = new GetWarehouseValuationUseCase(this.productRepository);
+
+  // ─── Use Cases — Reports ──────────────────────────────────────────────────
+  readonly getOverstockedProducts = new GetOverstockedProductsUseCase(
+    this.productRepository,
+    this.stockMovementRepository,
+  );
 
   // ─── Use Cases — Suppliers ────────────────────────────────────────────────
   readonly createSupplier = new CreateSupplierUseCase(

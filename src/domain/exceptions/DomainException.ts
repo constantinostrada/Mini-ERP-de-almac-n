@@ -45,3 +45,10 @@ export class SupplierNotFoundException extends DomainException {
     this.name = 'SupplierNotFoundException';
   }
 }
+
+export class InvalidQueryParamException extends DomainException {
+  constructor(param: string, reason: string) {
+    super(`Invalid query parameter "${param}": ${reason}`, 'INVALID_QUERY_PARAM');
+    this.name = 'InvalidQueryParamException';
+  }
+}

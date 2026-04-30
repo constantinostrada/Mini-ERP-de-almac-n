@@ -13,6 +13,9 @@ export interface IStockMovementRepository {
   /** Retrieve all movements for a given product, ordered by date descending. */
   findByProductId(productId: ProductId): Promise<StockMovement[]>;
 
+  /** Retrieve the most recent movement for a product, or null if there are none. */
+  findLastByProductId(productId: ProductId): Promise<StockMovement | null>;
+
   /** Retrieve all movements within a date range. */
   findByDateRange(from: Date, to: Date): Promise<StockMovement[]>;
 
