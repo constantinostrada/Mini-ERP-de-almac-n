@@ -55,3 +55,22 @@ export interface GetProductByIdDTO {
 export interface GetProductBySkuDTO {
   sku: string;
 }
+
+// ─── Pagination ───────────────────────────────────────────────────────────────
+
+export interface ListProductsQueryDTO {
+  page?: number;
+  pageSize?: number;
+}
+
+export interface PaginationMetaDTO {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface PaginatedProductsDTO {
+  items: ProductDTO[];
+  pagination: PaginationMetaDTO;
+}

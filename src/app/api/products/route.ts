@@ -12,10 +12,17 @@ import { parseBody } from '@/interfaces/api/helpers/parseBody';
  * POST → create a new product
  */
 
-export async function GET(): Promise<Response> {
+export async function GET(req: NextRequest): Promise<Response> {
   try {
-    const products = await container.listProducts.execute();
-    return successResponse(products);
+    const url = new URL(req.url);
+    const pageParam = url.searchParams.get('page');
+    const pageSizeParam = url.searchParams.get('pageSize');
+
+    const result = await container.listProducts.execute({
+      page: pageParam !== null ? Number(pageParam) : undefined,
+      pageSize: pageSizeParam !== null ? Number(pageSizeParam) : undefined,
+    });
+    return successResponse(result);
   } catch (err) {
     return handleError(err);
   }
