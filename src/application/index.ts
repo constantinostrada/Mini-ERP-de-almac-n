@@ -6,6 +6,7 @@ export type {
   PublicMovementType,
   RegisterMovementDTO,
   PublicStockMovementDTO,
+  MoneyDTO,
 } from './dtos/StockMovementDTO';
 export type { SupplierDTO, CreateSupplierDTO, UpdateSupplierDTO } from './dtos/SupplierDTO';
 export type { WarehouseValuationDTO, ProductValuationLineDTO } from './dtos/ValuationDTO';

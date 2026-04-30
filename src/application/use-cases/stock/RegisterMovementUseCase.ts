@@ -5,10 +5,12 @@ import {
 } from '@/domain/exceptions/DomainException';
 import type { IProductRepository } from '@/domain/repositories/IProductRepository';
 import type { IStockMovementRepository } from '@/domain/repositories/IStockMovementRepository';
+import { Money } from '@/domain/value-objects/Money';
 import { ProductId } from '@/domain/value-objects/ProductId';
 import { Quantity } from '@/domain/value-objects/Quantity';
 
 import type {
+  MoneyDTO,
   PublicMovementType,
   PublicStockMovementDTO,
   RegisterMovementDTO,
@@ -59,6 +61,7 @@ export class RegisterMovementUseCase {
     const productId = ProductId.create(dto.productId);
     const quantity = Quantity.create(dto.quantity);
     const domainType = PUBLIC_TO_DOMAIN[dto.type];
+    const unitCost = parseUnitCost(dto.unitCost);
 
     return this.mutex.runExclusive(productId.value, async () => {
       const product = await this.productRepository.findById(productId);
@@ -85,33 +88,55 @@ export class RegisterMovementUseCase {
         type: domainType,
         quantity,
         reason: dto.reason,
+        unitCost,
         occurredAt: new Date(),
       });
 
       await this.productRepository.update(product);
       await this.stockMovementRepository.save(movement);
 
-      return {
-        id: movement.id,
-        product_id: productId.value,
-        type: dto.type,
-        quantity: quantity.value,
-        reason: movement.reason,
-        created_at: movement.occurredAt.toISOString(),
-      };
+      return toPublicShape(movement, dto.type);
     });
   }
 
   static toPublicDTO(movement: StockMovement): PublicStockMovementDTO | null {
     const publicType = DOMAIN_TO_PUBLIC[movement.type];
     if (!publicType) return null;
-    return {
-      id: movement.id,
-      product_id: movement.productId.value,
-      type: publicType,
-      quantity: movement.quantity.value,
-      reason: movement.reason,
-      created_at: movement.occurredAt.toISOString(),
+    return toPublicShape(movement, publicType);
+  }
+}
+
+function parseUnitCost(input: MoneyDTO | undefined): Money | undefined {
+  if (input === undefined || input === null) return undefined;
+  if (typeof input !== 'object') {
+    throw new Error('unit_cost must be an object with { amount, currency }');
+  }
+  if (typeof input.amount !== 'number' || !Number.isFinite(input.amount)) {
+    throw new Error('unit_cost.amount must be a finite number');
+  }
+  if (typeof input.currency !== 'string' || input.currency.trim().length === 0) {
+    throw new Error('unit_cost.currency must be a non-empty string');
+  }
+  return Money.fromDecimal(input.amount, input.currency);
+}
+
+function toPublicShape(
+  movement: StockMovement,
+  publicType: PublicMovementType,
+): PublicStockMovementDTO {
+  const dto: PublicStockMovementDTO = {
+    id: movement.id,
+    product_id: movement.productId.value,
+    type: publicType,
+    quantity: movement.quantity.value,
+    reason: movement.reason,
+    created_at: movement.occurredAt.toISOString(),
+  };
+  if (movement.unitCost) {
+    dto.unit_cost = {
+      amount: movement.unitCost.amount,
+      currency: movement.unitCost.currency,
     };
   }
+  return dto;
 }

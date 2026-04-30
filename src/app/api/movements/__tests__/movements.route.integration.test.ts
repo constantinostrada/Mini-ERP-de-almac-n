@@ -219,6 +219,69 @@ describe('Integration — /api/movements', () => {
       }
     });
 
+    it('returns unit_cost in POST response and back in GET when provided', async () => {
+      const productId = await createProduct();
+
+      const postRes = await registerMovementHandler(
+        jsonRequest('http://localhost/api/movements', 'POST', {
+          product_id: productId,
+          type: 'INGRESO',
+          quantity: 4,
+          unit_cost: { amount: 12.5, currency: 'EUR' },
+        }),
+      );
+      const { status: postStatus, body: postBody } = await readJson(postRes);
+      expect(postStatus).toBe(201);
+
+      const postData = postBody.data as {
+        unit_cost?: { amount: number; currency: string };
+      };
+      expect(postData.unit_cost).toEqual({ amount: 12.5, currency: 'EUR' });
+
+      const getRes = await listMovementsHandler(
+        new NextRequest(`http://localhost/api/movements?product_id=${productId}`, {
+          method: 'GET',
+        }),
+      );
+      const { status: getStatus, body: getBody } = await readJson(getRes);
+      expect(getStatus).toBe(200);
+
+      const list = getBody.data as Array<{
+        unit_cost?: { amount: number; currency: string };
+      }>;
+      expect(list).toHaveLength(1);
+      expect(list[0]?.unit_cost).toEqual({ amount: 12.5, currency: 'EUR' });
+    });
+
+    it('omits unit_cost in POST and GET responses when not supplied', async () => {
+      const productId = await createProduct();
+
+      const postRes = await registerMovementHandler(
+        jsonRequest('http://localhost/api/movements', 'POST', {
+          product_id: productId,
+          type: 'INGRESO',
+          quantity: 2,
+        }),
+      );
+      const { status: postStatus, body: postBody } = await readJson(postRes);
+      expect(postStatus).toBe(201);
+
+      const postData = postBody.data as Record<string, unknown>;
+      expect(postData['unit_cost']).toBeUndefined();
+      expect('unit_cost' in postData).toBe(false);
+
+      const getRes = await listMovementsHandler(
+        new NextRequest(`http://localhost/api/movements?product_id=${productId}`, {
+          method: 'GET',
+        }),
+      );
+      const { body: getBody } = await readJson(getRes);
+      const list = getBody.data as Array<Record<string, unknown>>;
+      expect(list).toHaveLength(1);
+      expect(list[0]?.['unit_cost']).toBeUndefined();
+      expect('unit_cost' in (list[0] as object)).toBe(false);
+    });
+
     it('returns an empty list when product_id query param is missing', async () => {
       const res = await listMovementsHandler(
         new NextRequest('http://localhost/api/movements', { method: 'GET' }),

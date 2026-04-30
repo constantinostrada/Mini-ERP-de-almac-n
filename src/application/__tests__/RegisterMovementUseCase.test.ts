@@ -171,6 +171,68 @@ describe('RegisterMovementUseCase', () => {
     expect(movements).toHaveLength(1);
   });
 
+  it('persists and returns unit_cost when provided in the body', async () => {
+    seedProduct(productRepo, 'p1', 50);
+
+    const result = await useCase.execute({
+      productId: 'p1',
+      type: 'INGRESO',
+      quantity: 4,
+      unitCost: { amount: 12.5, currency: 'EUR' },
+    });
+
+    expect(result.unit_cost).toEqual({ amount: 12.5, currency: 'EUR' });
+
+    const stored = await movementRepo.findByProductId(ProductId.create('p1'));
+    expect(stored).toHaveLength(1);
+    expect(stored[0]?.unitCost?.amount).toBe(12.5);
+    expect(stored[0]?.unitCost?.currency).toBe('EUR');
+  });
+
+  it('omits unit_cost from the response when it is not supplied', async () => {
+    seedProduct(productRepo, 'p1', 50);
+
+    const result = await useCase.execute({
+      productId: 'p1',
+      type: 'INGRESO',
+      quantity: 2,
+    });
+
+    expect(result.unit_cost).toBeUndefined();
+    expect('unit_cost' in result).toBe(false);
+
+    const stored = await movementRepo.findByProductId(ProductId.create('p1'));
+    expect(stored[0]?.unitCost).toBeUndefined();
+  });
+
+  it('returns unit_cost from GET via toPublicDTO when persisted, omits it otherwise', async () => {
+    seedProduct(productRepo, 'p1', 50);
+
+    await useCase.execute({
+      productId: 'p1',
+      type: 'INGRESO',
+      quantity: 3,
+      unitCost: { amount: 7.25, currency: 'USD' },
+    });
+    await useCase.execute({
+      productId: 'p1',
+      type: 'INGRESO',
+      quantity: 1,
+    });
+
+    const stored = await movementRepo.findByProductId(ProductId.create('p1'));
+    const dtos = stored
+      .map((m) => RegisterMovementUseCase.toPublicDTO(m))
+      .filter((d): d is NonNullable<typeof d> => d !== null);
+
+    const withCost = dtos.find((d) => d.unit_cost !== undefined);
+    const withoutCost = dtos.find((d) => d.unit_cost === undefined);
+
+    expect(withCost?.unit_cost).toEqual({ amount: 7.25, currency: 'USD' });
+    expect(withoutCost).toBeDefined();
+    expect('unit_cost' in (withoutCost as object)).toBe(false);
+  });
+
   it('does not lock unrelated products against each other', async () => {
     seedProduct(productRepo, 'p1', 10);
     seedProduct(productRepo, 'p2', 10);
