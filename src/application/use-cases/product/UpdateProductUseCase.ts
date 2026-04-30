@@ -23,14 +23,9 @@ export class UpdateProductUseCase {
       throw new ProductNotFoundException(dto.id);
     }
 
-    product.updateDetails(dto.name, dto.description);
+    product.updateDetails(dto.name, dto.description ?? '');
     product.updatePrice(Money.fromDecimal(dto.unitPriceAmount, dto.unitPriceCurrency));
-
-    // Reorder threshold is a value object — we re-create it
-    const newThreshold = Quantity.create(dto.reorderThreshold);
-    // Directly modifying via a method keeps the entity in control of its invariants
-    // For this we expose a domain method; if product doesn't have one, we recreate it
-    void newThreshold; // consumed below via a dedicated domain method
+    product.updateReorderThreshold(Quantity.create(dto.reorderThreshold));
 
     await this.productRepository.update(product);
 
