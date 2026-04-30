@@ -8,6 +8,8 @@ export interface ProductDTO {
   sku: string;
   name: string;
   description: string;
+  /** customer-visible */
+  notes?: string;
   unitPriceAmount: number;
   unitPriceCurrency: string;
   stockQuantity: number;
@@ -23,6 +25,8 @@ export interface CreateProductDTO {
   sku: string;
   name: string;
   description?: string;
+  /** customer-visible */
+  notes?: string;
   unitPriceAmount: number;
   unitPriceCurrency: string;
   initialStockQuantity: number;
@@ -33,6 +37,8 @@ export interface UpdateProductDTO {
   id: string;
   name: string;
   description?: string;
+  /** customer-visible */
+  notes?: string;
   unitPriceAmount: number;
   unitPriceCurrency: string;
   reorderThreshold: number;

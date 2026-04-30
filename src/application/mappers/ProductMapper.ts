@@ -15,6 +15,7 @@ export class ProductMapper {
       sku: product.sku.value,
       name: product.name,
       description: product.description,
+      notes: product.notes,
       unitPriceAmount: product.unitPrice.amount,
       unitPriceCurrency: product.unitPrice.currency,
       stockQuantity: product.stockQuantity.value,

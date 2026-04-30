@@ -8,6 +8,8 @@ export interface ProductProps {
   sku: SKU;
   name: string;
   description: string;
+  /** customer-visible */
+  notes?: string;
   unitPrice: Money;
   stockQuantity: Quantity;
   reorderThreshold: Quantity;
@@ -26,6 +28,8 @@ export class Product {
   private readonly _sku: SKU;
   private _name: string;
   private _description: string;
+  /** customer-visible */
+  private _notes?: string;
   private _unitPrice: Money;
   private _stockQuantity: Quantity;
   private _reorderThreshold: Quantity;
@@ -38,6 +42,7 @@ export class Product {
     this._sku = props.sku;
     this._name = props.name;
     this._description = props.description;
+    this._notes = props.notes;
     this._unitPrice = props.unitPrice;
     this._stockQuantity = props.stockQuantity;
     this._reorderThreshold = props.reorderThreshold;
@@ -65,6 +70,11 @@ export class Product {
 
   get description(): string {
     return this._description;
+  }
+
+  /** customer-visible */
+  get notes(): string | undefined {
+    return this._notes;
   }
 
   get unitPrice(): Money {
@@ -113,10 +123,11 @@ export class Product {
   }
 
   /** Updates product metadata. */
-  updateDetails(name: string, description: string): void {
+  updateDetails(name: string, description: string, notes?: string): void {
     this.validateName(name);
     this._name = name;
     this._description = description;
+    this._notes = notes;
     this._updatedAt = new Date();
   }
 
