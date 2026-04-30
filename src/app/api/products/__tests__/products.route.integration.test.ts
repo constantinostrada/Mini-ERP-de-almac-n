@@ -75,20 +75,92 @@ describe('Integration — /api/products', () => {
   });
 
   describe('GET /api/products', () => {
-    it('lists all products', async () => {
+    it('returns the paginated catalog with default page=1 pageSize=20', async () => {
       await createProductHandler(jsonRequest('http://localhost/api/products', 'POST', validBody));
       await createProductHandler(
         jsonRequest('http://localhost/api/products', 'POST', { ...validBody, sku: 'INT-002' }),
       );
 
-      const res = await listProductsHandler();
+      const res = await listProductsHandler(jsonRequest('http://localhost/api/products', 'GET'));
       const { status, body } = await readJson(res);
 
       expect(status).toBe(200);
       expect(body.success).toBe(true);
-      const data = body.data as Array<{ sku: string }>;
-      expect(data).toHaveLength(2);
-      expect(data.map((p) => p.sku).sort()).toEqual(['INT-001', 'INT-002']);
+      const data = body.data as {
+        items: Array<{ sku: string }>;
+        pagination: { page: number; pageSize: number; total: number; totalPages: number };
+      };
+      expect(data.items).toHaveLength(2);
+      expect(data.items.map((p) => p.sku).sort()).toEqual(['INT-001', 'INT-002']);
+      expect(data.pagination).toEqual({
+        page: 1,
+        pageSize: 20,
+        total: 2,
+        totalPages: 1,
+      });
+    });
+
+    describe('with a 25-product fixture', () => {
+      beforeEach(async () => {
+        for (let i = 1; i <= 25; i++) {
+          await createProductHandler(
+            jsonRequest('http://localhost/api/products', 'POST', {
+              ...validBody,
+              sku: `PAG-${String(i).padStart(3, '0')}`,
+              name: `Producto ${i}`,
+            }),
+          );
+        }
+      });
+
+      it('page 1 with pageSize=20 returns 20 items and total reflects the count', async () => {
+        const res = await listProductsHandler(
+          jsonRequest('http://localhost/api/products?page=1&pageSize=20', 'GET'),
+        );
+        const { status, body } = await readJson(res);
+        expect(status).toBe(200);
+        const data = body.data as {
+          items: Array<{ sku: string }>;
+          pagination: { page: number; pageSize: number; total: number; totalPages: number };
+        };
+        expect(data.items).toHaveLength(20);
+        expect(data.pagination).toEqual({
+          page: 1,
+          pageSize: 20,
+          total: 25,
+          totalPages: 2,
+        });
+      });
+
+      it('page 2 with pageSize=20 returns the next 5 items, disjoint from page 1', async () => {
+        const page1Res = await listProductsHandler(
+          jsonRequest('http://localhost/api/products?page=1&pageSize=20', 'GET'),
+        );
+        const page2Res = await listProductsHandler(
+          jsonRequest('http://localhost/api/products?page=2&pageSize=20', 'GET'),
+        );
+        const page1 = (await readJson(page1Res)).body.data as {
+          items: Array<{ sku: string }>;
+        };
+        const page2Body = await readJson(page2Res);
+        const page2 = page2Body.body.data as {
+          items: Array<{ sku: string }>;
+          pagination: { page: number; pageSize: number; total: number; totalPages: number };
+        };
+
+        expect(page2.items).toHaveLength(5);
+        expect(page2.pagination).toEqual({
+          page: 2,
+          pageSize: 20,
+          total: 25,
+          totalPages: 2,
+        });
+
+        const page1Skus = new Set(page1.items.map((p) => p.sku));
+        for (const item of page2.items) {
+          expect(page1Skus.has(item.sku)).toBe(false);
+        }
+      });
     });
   });
 

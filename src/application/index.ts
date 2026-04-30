@@ -1,5 +1,14 @@
 // DTOs
-export type { ProductDTO, CreateProductDTO, UpdateProductDTO, AdjustStockDTO, GetProductByIdDTO } from './dtos/ProductDTO';
+export type {
+  ProductDTO,
+  CreateProductDTO,
+  UpdateProductDTO,
+  AdjustStockDTO,
+  GetProductByIdDTO,
+  ListProductsQueryDTO,
+  PaginationMetaDTO,
+  PaginatedProductsDTO,
+} from './dtos/ProductDTO';
 export type {
   StockMovementDTO,
   GetMovementsByProductDTO,
