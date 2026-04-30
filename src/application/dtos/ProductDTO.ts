@@ -22,7 +22,7 @@ export interface ProductDTO {
 export interface CreateProductDTO {
   sku: string;
   name: string;
-  description: string;
+  description?: string;
   unitPriceAmount: number;
   unitPriceCurrency: string;
   initialStockQuantity: number;
@@ -32,7 +32,7 @@ export interface CreateProductDTO {
 export interface UpdateProductDTO {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   unitPriceAmount: number;
   unitPriceCurrency: string;
   reorderThreshold: number;

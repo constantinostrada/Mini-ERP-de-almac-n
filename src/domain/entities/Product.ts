@@ -109,7 +109,7 @@ export class Product {
 
   /** Returns true when stock is at or below the reorder threshold. */
   needsReorder(): boolean {
-    return !this._stockQuantity.isGreaterThanOrEqualTo(this._reorderThreshold);
+    return this._reorderThreshold.isGreaterThanOrEqualTo(this._stockQuantity);
   }
 
   /** Updates product metadata. */
@@ -123,6 +123,12 @@ export class Product {
   /** Updates the unit price. */
   updatePrice(newPrice: Money): void {
     this._unitPrice = newPrice;
+    this._updatedAt = new Date();
+  }
+
+  /** Updates the reorder threshold (a.k.a. min_stock). */
+  updateReorderThreshold(newThreshold: Quantity): void {
+    this._reorderThreshold = newThreshold;
     this._updatedAt = new Date();
   }
 
