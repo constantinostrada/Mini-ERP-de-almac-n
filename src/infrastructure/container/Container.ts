@@ -9,7 +9,10 @@ import { GetProductByIdUseCase } from '@/application/use-cases/product/GetProduc
 import { ListProductsUseCase } from '@/application/use-cases/product/ListProductsUseCase';
 import { UpdateProductUseCase } from '@/application/use-cases/product/UpdateProductUseCase';
 import { CreateSupplierUseCase } from '@/application/use-cases/supplier/CreateSupplierUseCase';
+import { DeleteSupplierUseCase } from '@/application/use-cases/supplier/DeleteSupplierUseCase';
+import { GetSupplierByIdUseCase } from '@/application/use-cases/supplier/GetSupplierByIdUseCase';
 import { ListSuppliersUseCase } from '@/application/use-cases/supplier/ListSuppliersUseCase';
+import { UpdateSupplierUseCase } from '@/application/use-cases/supplier/UpdateSupplierUseCase';
 import { GetWarehouseValuationUseCase } from '@/application/use-cases/valuation/GetWarehouseValuationUseCase';
 
 import { InMemoryMutex } from '../concurrency/InMemoryMutex';
@@ -79,6 +82,12 @@ class Container {
   );
 
   readonly listSuppliers = new ListSuppliersUseCase(this.supplierRepository);
+
+  readonly getSupplierById = new GetSupplierByIdUseCase(this.supplierRepository);
+
+  readonly updateSupplier = new UpdateSupplierUseCase(this.supplierRepository);
+
+  readonly deleteSupplier = new DeleteSupplierUseCase(this.supplierRepository);
 }
 
 /**

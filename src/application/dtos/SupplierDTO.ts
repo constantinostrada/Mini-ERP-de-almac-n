@@ -22,3 +22,7 @@ export interface UpdateSupplierDTO {
   contactPhone: string;
   address: string;
 }
+
+export interface GetSupplierByIdDTO {
+  id: string;
+}

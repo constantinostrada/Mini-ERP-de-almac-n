@@ -5,6 +5,7 @@ import {
   DuplicateSkuException,
   InsufficientStockException,
   ProductNotFoundException,
+  SupplierNotFoundException,
 } from '@/domain/exceptions/DomainException';
 
 /**
@@ -39,6 +40,9 @@ export function errorResponse(
 
 export function handleError(err: unknown): NextResponse<ApiErrorResponse> {
   if (err instanceof ProductNotFoundException) {
+    return errorResponse(err.code, err.message, 404);
+  }
+  if (err instanceof SupplierNotFoundException) {
     return errorResponse(err.code, err.message, 404);
   }
   if (err instanceof DuplicateSkuException) {

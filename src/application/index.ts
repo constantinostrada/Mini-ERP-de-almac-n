@@ -8,7 +8,12 @@ export type {
   PublicStockMovementDTO,
   MoneyDTO,
 } from './dtos/StockMovementDTO';
-export type { SupplierDTO, CreateSupplierDTO, UpdateSupplierDTO } from './dtos/SupplierDTO';
+export type {
+  SupplierDTO,
+  CreateSupplierDTO,
+  UpdateSupplierDTO,
+  GetSupplierByIdDTO,
+} from './dtos/SupplierDTO';
 export type { WarehouseValuationDTO, ProductValuationLineDTO } from './dtos/ValuationDTO';
 
 // Ports
@@ -37,6 +42,9 @@ export type { GetWarehouseValuationDTO } from './use-cases/valuation/GetWarehous
 // Use Cases — Suppliers
 export { CreateSupplierUseCase } from './use-cases/supplier/CreateSupplierUseCase';
 export { ListSuppliersUseCase } from './use-cases/supplier/ListSuppliersUseCase';
+export { GetSupplierByIdUseCase } from './use-cases/supplier/GetSupplierByIdUseCase';
+export { UpdateSupplierUseCase } from './use-cases/supplier/UpdateSupplierUseCase';
+export { DeleteSupplierUseCase } from './use-cases/supplier/DeleteSupplierUseCase';
 
 // Mappers
 export { ProductMapper } from './mappers/ProductMapper';
