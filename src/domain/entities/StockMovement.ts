@@ -84,4 +84,13 @@ export class StockMovement {
   get occurredAt(): Date {
     return this._occurredAt;
   }
+
+  /**
+   * Signed effect of this movement on the product's stock level.
+   * INBOUND and ADJUSTMENT increase stock (adjustments are recorded as
+   * positive deltas); OUTBOUND decreases it.
+   */
+  get stockDelta(): number {
+    return this._type === 'OUTBOUND' ? -this._quantity.value : this._quantity.value;
+  }
 }

@@ -15,14 +15,18 @@ export class InMemoryStockMovementRepository implements IStockMovementRepository
   }
 
   async findByProductId(productId: ProductId): Promise<StockMovement[]> {
+    // Reverse before the stable sort so same-millisecond movements
+    // tie-break to most-recently-saved first (date descending contract).
     return Array.from(this.store.values())
       .filter((m) => m.productId.equals(productId))
+      .reverse()
       .sort((a, b) => b.occurredAt.getTime() - a.occurredAt.getTime());
   }
 
   async findByDateRange(from: Date, to: Date): Promise<StockMovement[]> {
     return Array.from(this.store.values())
       .filter((m) => m.occurredAt >= from && m.occurredAt <= to)
+      .reverse()
       .sort((a, b) => b.occurredAt.getTime() - a.occurredAt.getTime());
   }
 
