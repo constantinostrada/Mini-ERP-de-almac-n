@@ -1,4 +1,5 @@
 import type { Product } from '../entities/Product';
+import type { Supplier } from '../entities/Supplier';
 import { Money } from '../value-objects/Money';
 
 export interface ProductValuation {
@@ -13,6 +14,14 @@ export interface WarehouseValuationResult {
   lines: ProductValuation[];
   grandTotal: Money;
   currency: string;
+}
+
+export interface SupplierValuation {
+  supplierId: string;
+  supplierName: string;
+  productCount: number;
+  totalUnits: number;
+  totalValue: Money;
 }
 
 /**
@@ -56,5 +65,30 @@ export class StockValuationService {
     );
 
     return { lines, grandTotal, currency };
+  }
+
+  /**
+   * Calculates the inventory value grouped by supplier.
+   *
+   * Each supplier is valued over the products assigned to it, reusing the
+   * per-product valuation above. Products without a (known) supplier are
+   * not attributed to anyone.
+   */
+  calculateValueBySupplier(
+    suppliers: Supplier[],
+    products: Product[],
+    currency: string,
+  ): SupplierValuation[] {
+    return suppliers.map((supplier) => {
+      const supplierProducts = products.filter((p) => p.supplierId === supplier.id);
+      const valuation = this.calculateWarehouseValue(supplierProducts, currency);
+      return {
+        supplierId: supplier.id,
+        supplierName: supplier.name,
+        productCount: valuation.lines.length,
+        totalUnits: valuation.lines.reduce((acc, line) => acc + line.stockQuantity, 0),
+        totalValue: valuation.grandTotal,
+      };
+    });
   }
 }

@@ -11,6 +11,8 @@ export interface ProductProps {
   unitPrice: Money;
   stockQuantity: Quantity;
   reorderThreshold: Quantity;
+  /** Supplier that provides this product, when known. */
+  supplierId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -29,6 +31,7 @@ export class Product {
   private _unitPrice: Money;
   private _stockQuantity: Quantity;
   private _reorderThreshold: Quantity;
+  private _supplierId: string | undefined;
   private readonly _createdAt: Date;
   private _updatedAt: Date;
 
@@ -41,6 +44,7 @@ export class Product {
     this._unitPrice = props.unitPrice;
     this._stockQuantity = props.stockQuantity;
     this._reorderThreshold = props.reorderThreshold;
+    this._supplierId = props.supplierId;
     this._createdAt = props.createdAt;
     this._updatedAt = props.updatedAt;
   }
@@ -77,6 +81,10 @@ export class Product {
 
   get reorderThreshold(): Quantity {
     return this._reorderThreshold;
+  }
+
+  get supplierId(): string | undefined {
+    return this._supplierId;
   }
 
   get createdAt(): Date {
@@ -129,6 +137,12 @@ export class Product {
   /** Updates the reorder threshold (a.k.a. min_stock). */
   updateReorderThreshold(newThreshold: Quantity): void {
     this._reorderThreshold = newThreshold;
+    this._updatedAt = new Date();
+  }
+
+  /** Assigns (or clears) the supplier that provides this product. */
+  assignSupplier(supplierId: string | undefined): void {
+    this._supplierId = supplierId;
     this._updatedAt = new Date();
   }
 

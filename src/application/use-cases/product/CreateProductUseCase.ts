@@ -40,6 +40,7 @@ export class CreateProductUseCase {
       unitPrice: Money.fromDecimal(dto.unitPriceAmount, dto.unitPriceCurrency),
       stockQuantity: Quantity.create(dto.initialStockQuantity),
       reorderThreshold: Quantity.create(dto.reorderThreshold),
+      supplierId: dto.supplierId,
       createdAt: new Date(),
       updatedAt: new Date(),
     });

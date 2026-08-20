@@ -20,6 +20,10 @@ export type {
   GetSupplierByIdDTO,
 } from './dtos/SupplierDTO';
 export type { WarehouseValuationDTO, ProductValuationLineDTO } from './dtos/ValuationDTO';
+export type {
+  SupplierValuationDTO,
+  SupplierValuationLineDTO,
+} from './dtos/SupplierValuationDTO';
 
 // Ports
 export type { IIdGenerator } from './ports/IIdGenerator';
@@ -45,6 +49,8 @@ export { GetStockMovementsExportUseCase } from './use-cases/stock/GetStockMoveme
 // Use Cases — Valuation
 export { GetWarehouseValuationUseCase } from './use-cases/valuation/GetWarehouseValuationUseCase';
 export type { GetWarehouseValuationDTO } from './use-cases/valuation/GetWarehouseValuationUseCase';
+export { GetSupplierValuationUseCase } from './use-cases/valuation/GetSupplierValuationUseCase';
+export type { GetSupplierValuationDTO } from './use-cases/valuation/GetSupplierValuationUseCase';
 
 // Use Cases — Suppliers
 export { CreateSupplierUseCase } from './use-cases/supplier/CreateSupplierUseCase';

@@ -13,6 +13,7 @@ export interface ProductDTO {
   stockQuantity: number;
   reorderThreshold: number;
   needsReorder: boolean;
+  supplierId?: string;
   createdAt: string; // ISO 8601
   updatedAt: string; // ISO 8601
 }
@@ -27,6 +28,7 @@ export interface CreateProductDTO {
   unitPriceCurrency: string;
   initialStockQuantity: number;
   reorderThreshold: number;
+  supplierId?: string;
 }
 
 export interface UpdateProductDTO {

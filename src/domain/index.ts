@@ -19,7 +19,11 @@ export type { ISupplierRepository } from './repositories/ISupplierRepository';
 
 // Domain Services
 export { StockValuationService } from './services/StockValuationService';
-export type { ProductValuation, WarehouseValuationResult } from './services/StockValuationService';
+export type {
+  ProductValuation,
+  WarehouseValuationResult,
+  SupplierValuation,
+} from './services/StockValuationService';
 
 // Exceptions
 export {

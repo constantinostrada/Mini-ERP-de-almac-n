@@ -15,6 +15,7 @@ import { DeleteSupplierUseCase } from '@/application/use-cases/supplier/DeleteSu
 import { GetSupplierByIdUseCase } from '@/application/use-cases/supplier/GetSupplierByIdUseCase';
 import { ListSuppliersUseCase } from '@/application/use-cases/supplier/ListSuppliersUseCase';
 import { UpdateSupplierUseCase } from '@/application/use-cases/supplier/UpdateSupplierUseCase';
+import { GetSupplierValuationUseCase } from '@/application/use-cases/valuation/GetSupplierValuationUseCase';
 import { GetWarehouseValuationUseCase } from '@/application/use-cases/valuation/GetWarehouseValuationUseCase';
 
 import { InMemoryMutex } from '../concurrency/InMemoryMutex';
@@ -86,6 +87,11 @@ class Container {
 
   // ─── Use Cases — Valuation ────────────────────────────────────────────────
   readonly getWarehouseValuation = new GetWarehouseValuationUseCase(this.productRepository);
+
+  readonly getSupplierValuation = new GetSupplierValuationUseCase(
+    this.supplierRepository,
+    this.productRepository,
+  );
 
   // ─── Use Cases — Suppliers ────────────────────────────────────────────────
   readonly createSupplier = new CreateSupplierUseCase(

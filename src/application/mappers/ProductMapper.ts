@@ -20,6 +20,7 @@ export class ProductMapper {
       stockQuantity: product.stockQuantity.value,
       reorderThreshold: product.reorderThreshold.value,
       needsReorder: product.needsReorder(),
+      supplierId: product.supplierId,
       createdAt: product.createdAt.toISOString(),
       updatedAt: product.updatedAt.toISOString(),
     };
