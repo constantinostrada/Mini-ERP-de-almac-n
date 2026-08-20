@@ -1,14 +1,15 @@
-import { AdjustStockUseCase } from '@/application/use-cases/stock/AdjustStockUseCase';
-import { GetLowStockProductsUseCase } from '@/application/use-cases/stock/GetLowStockProductsUseCase';
-import { GetProductMovementHistoryUseCase } from '@/application/use-cases/stock/GetProductMovementHistoryUseCase';
-import { GetStockMovementsUseCase } from '@/application/use-cases/stock/GetStockMovementsUseCase';
-import { ListPublicMovementsUseCase } from '@/application/use-cases/stock/ListPublicMovementsUseCase';
-import { RegisterMovementUseCase } from '@/application/use-cases/stock/RegisterMovementUseCase';
 import { CreateProductUseCase } from '@/application/use-cases/product/CreateProductUseCase';
 import { DeleteProductUseCase } from '@/application/use-cases/product/DeleteProductUseCase';
 import { GetProductByIdUseCase } from '@/application/use-cases/product/GetProductByIdUseCase';
 import { ListProductsUseCase } from '@/application/use-cases/product/ListProductsUseCase';
 import { UpdateProductUseCase } from '@/application/use-cases/product/UpdateProductUseCase';
+import { AdjustStockUseCase } from '@/application/use-cases/stock/AdjustStockUseCase';
+import { GetLowStockProductsUseCase } from '@/application/use-cases/stock/GetLowStockProductsUseCase';
+import { GetProductMovementHistoryUseCase } from '@/application/use-cases/stock/GetProductMovementHistoryUseCase';
+import { GetStockMovementsExportUseCase } from '@/application/use-cases/stock/GetStockMovementsExportUseCase';
+import { GetStockMovementsUseCase } from '@/application/use-cases/stock/GetStockMovementsUseCase';
+import { ListPublicMovementsUseCase } from '@/application/use-cases/stock/ListPublicMovementsUseCase';
+import { RegisterMovementUseCase } from '@/application/use-cases/stock/RegisterMovementUseCase';
 import { CreateSupplierUseCase } from '@/application/use-cases/supplier/CreateSupplierUseCase';
 import { DeleteSupplierUseCase } from '@/application/use-cases/supplier/DeleteSupplierUseCase';
 import { GetSupplierByIdUseCase } from '@/application/use-cases/supplier/GetSupplierByIdUseCase';
@@ -77,6 +78,11 @@ class Container {
   );
 
   readonly listPublicMovements = new ListPublicMovementsUseCase(this.stockMovementRepository);
+
+  readonly getStockMovementsExport = new GetStockMovementsExportUseCase(
+    this.productRepository,
+    this.stockMovementRepository,
+  );
 
   // ─── Use Cases — Valuation ────────────────────────────────────────────────
   readonly getWarehouseValuation = new GetWarehouseValuationUseCase(this.productRepository);

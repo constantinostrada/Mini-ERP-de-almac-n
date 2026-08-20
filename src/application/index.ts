@@ -12,6 +12,7 @@ export type {
   GetProductMovementHistoryDTO,
   ProductMovementHistoryItemDTO,
 } from './dtos/ProductMovementHistoryDTO';
+export type { StockMovementExportRowDTO } from './dtos/StockMovementExportDTO';
 export type {
   SupplierDTO,
   CreateSupplierDTO,
@@ -39,6 +40,7 @@ export { RegisterMovementUseCase } from './use-cases/stock/RegisterMovementUseCa
 export { ListPublicMovementsUseCase } from './use-cases/stock/ListPublicMovementsUseCase';
 export type { ListPublicMovementsDTO } from './use-cases/stock/ListPublicMovementsUseCase';
 export { GetProductMovementHistoryUseCase } from './use-cases/stock/GetProductMovementHistoryUseCase';
+export { GetStockMovementsExportUseCase } from './use-cases/stock/GetStockMovementsExportUseCase';
 
 // Use Cases — Valuation
 export { GetWarehouseValuationUseCase } from './use-cases/valuation/GetWarehouseValuationUseCase';
@@ -55,4 +57,5 @@ export { DeleteSupplierUseCase } from './use-cases/supplier/DeleteSupplierUseCas
 export { ProductMapper } from './mappers/ProductMapper';
 export { StockMovementMapper } from './mappers/StockMovementMapper';
 export { ProductMovementHistoryMapper } from './mappers/ProductMovementHistoryMapper';
+export { StockMovementExportMapper } from './mappers/StockMovementExportMapper';
 export { SupplierMapper } from './mappers/SupplierMapper';

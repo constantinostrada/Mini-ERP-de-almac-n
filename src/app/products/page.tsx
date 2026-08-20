@@ -124,7 +124,24 @@ export default function ProductsPage(): ReactNode {
 
       {selected && (
         <div className="card" style={{ marginTop: '1rem' }}>
-          <h3 className="section-title">Historial de movimientos — {selected.name}</h3>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              gap: '1rem',
+            }}
+          >
+            <h3 className="section-title">Historial de movimientos — {selected.name}</h3>
+            <button
+              type="button"
+              onClick={() => {
+                window.location.href = '/api/movements/export';
+              }}
+            >
+              Export CSV
+            </button>
+          </div>
           {movementsLoading && <p style={{ color: 'var(--color-muted)' }}>Cargando historial…</p>}
           {movementsError && <p style={{ color: 'var(--color-warning)' }}>{movementsError}</p>}
           {!movementsLoading && !movementsError && movements.length === 0 && (
